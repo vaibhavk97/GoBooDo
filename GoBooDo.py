@@ -6,17 +6,22 @@ import os
 import pickle
 from storeImages import StoreImages
 from makePDF import createBook
-import sys
+import argparse
 
 #suppress urllib3 warning
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
+parser = argparse.ArgumentParser(description='A tutorial of argparse!')
+
+parser.add_argument("--id")
+args = parser.parse_args()
+
 #load config
 with open('settings.json') as ofile:
     settings = json.load(ofile)
 
-class  Goboodo:
+class  GoBooDo:
     def __init__(self,id,):
         self.id = id
         self.country = settings['country']
@@ -36,6 +41,20 @@ class  Goboodo:
         with open('proxies.txt','r') as ofile:
             self.plist = ofile.readlines()
 
+    def resethead(self):
+        try:
+            req = requests.get("https://google."+self.country,verify=False)
+            self.head = {
+                'Host': 'books.google.'+self.country,
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:53.0) Gecko/20100101 Firefox/53.00',
+                'Accept': '*/*',
+                'Accept-Language': 'en-US,en;q=0.5',
+                'Accept-Encoding': 'gzip, deflate',
+                'Connection': 'close',
+                'Cookie': "NID=" + str(req.cookies['NID']),
+                        }
+        except Exception as e:
+            print(e)
     def getProxy(self):
         prox =  random.choice(self.plist)
         return prox.strip()
@@ -48,11 +67,12 @@ class  Goboodo:
             self.pageLinkDict[pageData['pid']]['order'] = pageData['order']
 
     def getInitialData(self):
+        initUrl = "https://books.google." + self.country + "/books?id=" + self.id + "&printsec=frontcover"
+        page_data = requests.get(initUrl, headers=self.head, verify=False)
+        soup = BeautifulSoup(page_data.content, "html5lib")
+        self.name = soup.findAll("title")[0].contents[0]
+        print(f'Downloading {self.name[:-15]}')
         if self.found == False:
-            initUrl = "https://books.google."+self.country+"/books?id="+self.id+"&printsec=frontcover"
-            page_data = requests.get(initUrl, headers=self.head,verify=False)
-            soup = BeautifulSoup(page_data.content, "html5lib")
-            print(f'Downloading {soup.findAll("title")[0].contents[0]}')
             scripts = (soup.findAll('script'))
             stringResponse = ("["+scripts[6].text.split("_OC_Run")[1][1:-2]+"]")
             jsonResponse = json.loads(stringResponse)
@@ -96,35 +116,22 @@ class  Goboodo:
             }
             print(f'Using proxy {proxy} for the url of page {self.pageList[0]}',)
             try:
-                self.b_url = "https://books.google."+self.country+"/books?id=" + str(self.id) + "&pg=" + str(self.pageList[0]) + "&jscmd=click3"
+                self.b_url = "https://books.google."+self.country+"/books?id=" + str(self.id) + "&pg=" +\
+                             str(self.pageList[0]) + "&jscmd=click3"
                 page_data = requests.get(self.b_url, headers=self.head,proxies=proxyDict,verify=False)
             except Exception as e:
                 print(e)
             return page_data.json()
         else:
-            self.b_url = "https://books.google."+self.country+"/books?id="+str(self.id)+"&pg="+ str(self.pageList[0]) +"&jscmd=click3"
+            self.b_url = "https://books.google."+self.country+"/books?id="+str(self.id)+"&pg="+ str(self.pageList[0]) \
+                         +"&jscmd=click3"
             page_data = requests.get(self.b_url, headers=self.head,verify=False)
             return page_data.json()
 
-    def resethead(self):
-        try:
-            req = requests.get("https://google."+self.country,verify=False)
-            self.head = {
-                'Host': 'books.google.co.in',
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:53.0) Gecko/20100101 Firefox/53.00',
-                'Accept': '*/*',
-                'Accept-Language': 'en-US,en;q=0.5',
-                'Accept-Encoding': 'gzip, deflate',
-                'Connection': 'close',
-                'Cookie': "NID=" + str(req.cookies['NID']),
-                        }
-        except Exception as e:
-            print(e)
-
     def processBook(self):
         downloadService = StoreImages(self.path,settings['proxy_images'])
-        downloadService.getImages(settings['max_retry_images'])
-        service = createBook(self.id, self.path)
+        downloadService.getImages(settings['max_retry_images']+1)
+        service = createBook(self.name, self.path)
         service.makePdf()
 
     def start(self):
@@ -135,7 +142,7 @@ class  Goboodo:
             print('There appears to be no page links to be fetched, fetching the images for downloaded links')
             return self.processBook()
         maxPageLimit = 0
-        maxPageLimitHIT = settings['max_retry_links']
+        maxPageLimitHIT = settings['max_retry_links']+1
         proxyFlag = 0
         while True:
             try:
@@ -151,7 +158,7 @@ class  Goboodo:
                 if (maxPageLimit == self.pageList[0]):
                     maxPageLimitHIT -= 1
                 if (maxPageLimitHIT == 1):
-                    maxPageLimitHIT = settings['max_retry_links']
+                    maxPageLimitHIT = settings['max_retry_links']+1
                     print(f'Could not fetch link for page {self.pageList[0]}')
                     self.obstinatePages.append(self.pageList[0])
                     self.pageList = self.pageList[1:]
@@ -171,18 +178,17 @@ class  Goboodo:
         self.processBook()
 
 if __name__ == "__main__":
-    id = "nOJ0DwAAQBAJ"
 
     print('''
- ____            ____                    ____              
-/\  _`\         /\  _`\                 /\  _`\            
-\ \ \L\_\    ___\ \ \L\ \    ___     ___\ \ \/\ \    ___   
- \ \ \L_L   / __`\ \  _ <'  / __`\  / __`\ \ \ \ \  / __`\ 
-  \ \ \/, \/\ \L\ \ \ \L\ \/\ \L\ \/\ \L\ \ \ \_\ \/\ \L\ \
-   \ \____/\ \____/\ \____/\ \____/\ \____/\ \____/\ \____/
-
------------------------------------------------------------------                                
+ .88888.           dP                               dP          
+d8'   `88          88                               88          
+88        .d8888b. 88d888b. .d8888b. .d8888b. .d888b88 .d8888b. 
+88   YP88 88'  `88 88'  `88 88'  `88 88'  `88 88'  `88 88'  `88 
+Y8.   .88 88.  .88 88.  .88 88.  .88 88.  .88 88.  .88 88.  .88 
+ `88888'  `88888P' 88Y8888' `88888P' `88888P' `88888P8 `88888P' 
+oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo                                                                         
     ''')
-    book = Goboodo(id)
+
+    book = GoBooDo(args.id)
     book.start()
 
