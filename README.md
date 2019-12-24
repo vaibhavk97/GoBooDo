@@ -4,7 +4,7 @@
 GoBoodo is a python program which downloades the images of the pages of the given book and finally creates a pdf with all the images fetched.
 
 # Usage
-For downloading a book GoBoodo requires the book id which can be fetched from the url of the book. For consider the example below:
+For downloading a book GoBoodo requires the book id which can be fetched from the url of the book. For instance consider the example below:
 ~~~
 https://books.google.co.in/books?id=XUwOtdcIWdkC&printsec=frontcover#v=onepage&q&f=false
 ~~~ 
@@ -29,7 +29,7 @@ The configuration can be done in the settings.json and the description is as fol
 The output will be saved as a folder named the 'id' of the book which was given as input. The final pdf will be in the output folder inside it.
 Proxies may be added in proxies.txt (a sample proxy has been added already).
 
-#Dependencies
+# Dependencies
 ~~~
 requests
 bs4
