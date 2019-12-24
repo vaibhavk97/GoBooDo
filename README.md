@@ -2,13 +2,13 @@
 ### A swift google books downloader with proxy support.
 
 
- .88888.           dP                               dP
-d8'   `88          88                               88
-88        .d8888b. 88d888b. .d8888b. .d8888b. .d888b88 .d8888b.
-88   YP88 88'  `88 88'  `88 88'  `88 88'  `88 88'  `88 88'  `88
-Y8.   .88 88.  .88 88.  .88 88.  .88 88.  .88 88.  .88 88.  .88
- `88888'  `88888P' 88Y8888' `88888P' `88888P' `88888P8 `88888P'
-oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
+     .88888.           dP                               dP
+    d8'   `88          88                               88
+    88        .d8888b. 88d888b. .d8888b. .d8888b. .d888b88 .d8888b.
+    88   YP88 88'  `88 88'  `88 88'  `88 88'  `88 88'  `88 88'  `88
+    Y8.   .88 88.  .88 88.  .88 88.  .88 88.  .88 88.  .88 88.  .88
+     `88888'  `88888P' 88Y8888' `88888P' `88888P' `88888P8 `88888P'
+    oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
 
 
 GoBoodo is a python program which downloades the images of the pages of the given book and finally creates a pdf with all the images fetched.
