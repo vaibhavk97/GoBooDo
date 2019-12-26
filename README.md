@@ -1,5 +1,5 @@
 # GoBooDo
-### A swift google books downloader with proxy support.
+### A google books downloader with proxy support.
 
 
      .88888.           dP                               dP
