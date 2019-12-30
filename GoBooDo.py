@@ -188,7 +188,10 @@ Y8.   .88 88.  .88 88.  .88 88.  .88 88.  .88 88.  .88 88.  .88
  `88888'  `88888P' 88Y8888' `88888P' `88888P' `88888P8 `88888P' 
 oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo                                                                         
     ''')
-
+    book_id = args.id
+    if(book_id==None or len(book_id)!=12):
+        print('No book id or incorrect book id given')
+        exit(0)
     book = GoBooDo(args.id)
     book.start()
 
