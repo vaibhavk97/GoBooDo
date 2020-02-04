@@ -37,7 +37,7 @@ The configuration can be done in the settings.json and the description is as fol
 ~~~
 
 The output will be saved as a folder named the 'id' of the book which was given as input. The final PDF will be in the output folder inside it.
-Proxies may be added in proxies.txt (a sample proxy has been added already).
+Proxies may be added in proxies.txt (a sample proxy has been added already). After the program has finished running once, it will keep the state of the book saved and any subsequent runs will resume from the previous state of links and images.
 
 # Dependencies
 ~~~
