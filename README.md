@@ -11,7 +11,7 @@
     oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
 
 
-GoBooDo is a python program which downloads the images of the pages of the given book and finally creates a pdf with all the images fetched.
+GoBooDo is a python3 program which downloads the images of the pages of the given book and finally creates a pdf with all the images fetched.
 
 # Usage
 For downloading a book GoBooDo requires the book id which can be fetched from the url of the book. For instance consider the example below:
@@ -43,8 +43,9 @@ Proxies may be added in proxies.txt (a sample proxy has been added already).
 ~~~
 requests
 bs4
-PIL
+Pillow
 fpdf
+html5lib
 ~~~
 
 # Todo
