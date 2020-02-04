@@ -11,7 +11,7 @@
     oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
 
 
-GoBooDo is a python3 program which downloads the images of the pages of the given book and finally creates a pdf with all the images fetched.
+GoBooDo is a python3 program which downloads the books which are available for preview at Google Books. It downloads high resolution image of those pages and combines them to save the file as a PDF. Since Google limits the amount of pages accessible to each individual majorly on the basis of IP address, GoBooDo uses proxies for circumventing that limit and maximizing the number of pages that can be accessed in the preview.
 
 # Usage
 For downloading a book GoBooDo requires the book id which can be fetched from the url of the book. For instance consider the example below:
