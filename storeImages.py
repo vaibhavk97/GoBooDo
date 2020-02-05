@@ -8,7 +8,7 @@ import random
 class StoreImages:
 
     def __init__(self,bookpath,proxyflag):
-        self.proxyflag = proxyflag
+        self.proxyFlag = proxyflag
         self.bookPath = bookpath
         self.imagePath = os.path.join(self.bookPath,'Images')
         self.pagesFetched = {}
@@ -21,7 +21,6 @@ class StoreImages:
             path = os.path.join(bookpath, 'data', "pagesFetched.pkl")
             with open(path, 'rb') as ofile:
                 self.pagesFetched = pickle.load(ofile)
-
             path = os.path.join(bookpath, 'data', "pageLinkDict.pkl")
             with open(path, 'rb') as ofile:
                 allPages = pickle.load(ofile)
@@ -54,36 +53,41 @@ class StoreImages:
 
     def getImages(self,retries):
         self.resethead()
-        for page_data in self.PageLinkDict.keys():
+        for pageData in self.PageLinkDict.keys():
                 try:
-                    link = self.PageLinkDict[page_data]['src']
+                    link = self.PageLinkDict[pageData]['src']
                     if not link:
                         continue
-                    page_number = self.PageLinkDict[page_data]['order']
+                    pageNumber = self.PageLinkDict[pageData]['order']
                     checkIfPageFetched = retries
                     while checkIfPageFetched > 0:
-                        if checkIfPageFetched != retries and self.proxyflag :
+                        proxyFailed = False
+                        if checkIfPageFetched != retries and self.proxyFlag :
                             proxy = self.getProxy()
                             proxyDict = {
                                 "http": 'http://' + proxy,
                                 "https": 'https://' + proxy,
                             }
-                            print(f'Using {proxy} for the image of page {page_number}')
-                            pageImage = requests.get(link + '&w=1500', headers=self.head,proxies=proxyDict,verify=False)
+                            print(f'Using {proxy} for the image of page {pageNumber}')
+                            proxyFailed = False
+                            try:
+                                pageImage = requests.get(link + '&w=1500', headers=self.head,proxies=proxyDict,verify=False)
+                            except:
+                                proxyFailed = True
                         else:
                             pageImage = requests.get(link + '&w=1500', headers=self.head,verify=False)
-                        if len(pageImage.content) == 98670:
+                        if len(pageImage.content) == 98670 or proxyFailed:
                             self.resethead()
                             checkIfPageFetched -= 1
                         else:
                             checkIfPageFetched = -1
-                            print(f'Fetched image for page {page_number}')
-                            self.pagesFetched[page_data]=self.PageLinkDict[page_data]
+                            print(f'Fetched image for page {pageNumber}')
+                            self.pagesFetched[pageData]=self.PageLinkDict[pageData]
                             im = Image.open(BytesIO(pageImage.content))
-                            im.save(os.path.join(self.imagePath,str(page_number)+".png"))
+                            im.save(os.path.join(self.imagePath,str(pageNumber)+".png"))
                     else:
                         if(checkIfPageFetched==0):
-                            print("Could not fetch the image of " + str(page_number))
+                            print("Could not fetch the image for page " + str(pageNumber))
                 except Exception as e:
                     print(e)
         with open(os.path.join(self.bookPath,'data','pagesFetched.pkl'),'wb+') as ofile:

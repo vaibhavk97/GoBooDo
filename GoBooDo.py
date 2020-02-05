@@ -12,7 +12,7 @@ import argparse
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-parser = argparse.ArgumentParser(description='A tutorial of argparse!')
+parser = argparse.ArgumentParser(description='Welcome to GoBooDo')
 
 parser.add_argument("--id")
 args = parser.parse_args()
@@ -68,8 +68,8 @@ class  GoBooDo:
 
     def getInitialData(self):
         initUrl = "https://books.google." + self.country + "/books?id=" + self.id + "&printsec=frontcover"
-        page_data = requests.get(initUrl, headers=self.head, verify=False)
-        soup = BeautifulSoup(page_data.content, "html5lib")
+        pageData = requests.get(initUrl, headers=self.head, verify=False)
+        soup = BeautifulSoup(pageData.content, "html5lib")
         self.name = soup.findAll("title")[0].contents[0]
         print(f'Downloading {self.name[:-15]}')
         if self.found == False:
@@ -89,7 +89,7 @@ class  GoBooDo:
                 with open(os.path.join(self.dataPath,'pageLinkDict.pkl'),'rb') as ofile:
                     self.pageLinkDict = pickle.load(ofile)
             except:
-                print('Please delete the corresponding folder and start again')
+                print('Please delete the corresponding folder and start again or the book is not available for preview.')
                 exit(0)
 
     def insertIntoPageDict(self, subsequentJsonData):
@@ -118,15 +118,15 @@ class  GoBooDo:
             try:
                 self.b_url = "https://books.google."+self.country+"/books?id=" + str(self.id) + "&pg=" +\
                              str(self.pageList[0]) + "&jscmd=click3"
-                page_data = requests.get(self.b_url, headers=self.head,proxies=proxyDict,verify=False)
+                pageData = requests.get(self.b_url, headers=self.head,proxies=proxyDict,verify=False)
             except Exception as e:
-                print(e)
-            return page_data.json()
+                print('Could not connect with this proxy')
+            return pageData.json()
         else:
             self.b_url = "https://books.google."+self.country+"/books?id="+str(self.id)+"&pg="+ str(self.pageList[0]) \
                          +"&jscmd=click3"
-            page_data = requests.get(self.b_url, headers=self.head,verify=False)
-            return page_data.json()
+            pageData = requests.get(self.b_url, headers=self.head,verify=False)
+            return pageData.json()
 
     def processBook(self):
         downloadService = StoreImages(self.path,settings['proxy_images'])
@@ -135,14 +135,17 @@ class  GoBooDo:
         service.makePdf()
 
     def start(self):
-        self.getInitialData()
+        try:
+            self.getInitialData()
+        except:
+            exit(0)
         try:
             lastFirstList = self.pageList[0]
         except:
             print('There appears to be no page links to be fetched, fetching the images for downloaded links')
             return self.processBook()
         maxPageLimit = 0
-        maxPageLimitHIT = settings['max_retry_links']+1
+        maxPageLimitHit = settings['max_retry_links']+2
         proxyFlag = 0
         while True:
             try:
@@ -156,9 +159,9 @@ class  GoBooDo:
             self.insertIntoPageDict(interimData)
             try:
                 if (maxPageLimit == self.pageList[0]):
-                    maxPageLimitHIT -= 1
-                if (maxPageLimitHIT == 1):
-                    maxPageLimitHIT = settings['max_retry_links']+1
+                    maxPageLimitHit -= 1
+                if (maxPageLimitHit == 1):
+                    maxPageLimitHit = settings['max_retry_links']+2
                     print(f'Could not fetch link for page {self.pageList[0]}')
                     self.obstinatePages.append(self.pageList[0])
                     self.pageList = self.pageList[1:]
@@ -178,15 +181,14 @@ class  GoBooDo:
         self.processBook()
 
 if __name__ == "__main__":
-
     print('''
- .88888.           dP                               dP          
-d8'   `88          88                               88          
-88        .d8888b. 88d888b. .d8888b. .d8888b. .d888b88 .d8888b. 
-88   YP88 88'  `88 88'  `88 88'  `88 88'  `88 88'  `88 88'  `88 
-Y8.   .88 88.  .88 88.  .88 88.  .88 88.  .88 88.  .88 88.  .88 
- `88888'  `88888P' 88Y8888' `88888P' `88888P' `88888P8 `88888P' 
-oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo                                                                         
+ .88888.            888888ba                    888888ba           
+d8'   `88           88    `8b                   88    `8b          
+88        .d8888b. a88aaaa8P' .d8888b. .d8888b. 88     88 .d8888b. 
+88   YP88 88'  `88  88   `8b. 88'  `88 88'  `88 88     88 88'  `88 
+Y8.   .88 88.  .88  88    .88 88.  .88 88.  .88 88    .8P 88.  .88 
+ `88888'  `88888P'  88888888P `88888P' `88888P' 8888888P  `88888P' 
+ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo                                                                                                                                
     ''')
     book_id = args.id
     if(book_id==None or len(book_id)!=12):

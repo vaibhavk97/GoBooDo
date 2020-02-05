@@ -1,7 +1,7 @@
 {
-  "country":"co.in",
-  "proxy_links":0,
-  "proxy_images":0,
-  "max_retry_links":1,
-  "max_retry_images":1
+  "country": "de",
+  "proxy_links": 0,
+  "proxy_images": 0,
+  "max_retry_links": 1,
+  "max_retry_images": 1
 }
