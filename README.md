@@ -47,7 +47,7 @@ fpdf
 html5lib
 ~~~
 
-#Features 
+# Features 
 1. Stateful : GoBooDo keeps a track of the books which are downloaded. In each subsequent iterations of operation only those those links and images are fetched which were not downloaded earlier.
 2. Proxy support : Since Google limits the amount of pages accessible to each individual majorly on the basis of IP address, GoBooDo uses proxies for circumventing that limit and maximizing the number of pages that can be accessed in the preview.
 
