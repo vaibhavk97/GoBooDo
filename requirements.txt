@@ -1,0 +1,5 @@
+requests
+bs4
+Pillow
+fpdf
+html5lib
