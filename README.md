@@ -39,6 +39,7 @@ The configuration can be done in the settings.json and the description is as fol
 The output will be saved as a folder named the 'id' of the book which was given as input. The final PDF will be in the output folder inside it along with a folder containing the images.
 Proxies may be added in proxies.txt (a sample proxy has been added already).
 # Dependencies
+Use pip install requirements.txt for installing all the packages at once.
 ~~~
 requests
 bs4
