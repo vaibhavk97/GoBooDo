@@ -7,7 +7,9 @@ import random
 
 class StoreImages:
 
-    def __init__(self,bookpath,proxyflag):
+    def __init__(self,bookpath,proxyflag,emptyImageSize,resolution):
+        self.emptyImageSize = emptyImageSize
+        self.pageResolution = resolution
         self.proxyFlag = proxyflag
         self.bookPath = bookpath
         self.imagePath = os.path.join(self.bookPath,'Images')
@@ -71,12 +73,13 @@ class StoreImages:
                             print(f'Using {proxy} for the image of page {pageNumber}')
                             proxyFailed = False
                             try:
-                                pageImage = requests.get(link + '&w=1500', headers=self.head,proxies=proxyDict,verify=False)
+                                pageImage = requests.get(link + '&w=' + str(self.pageResolution), headers=self.head, proxies=proxyDict, verify=False)
                             except:
+                                print('Could not connect with this proxy')
                                 proxyFailed = True
                         else:
-                            pageImage = requests.get(link + '&w=1500', headers=self.head,verify=False)
-                        if len(pageImage.content) == 98670 or proxyFailed:
+                            pageImage = requests.get(link + '&w=' + str(self.pageResolution), headers=self.head, verify=False)
+                        if len(pageImage.content) == self.emptyImageSize or proxyFailed:
                             self.resethead()
                             checkIfPageFetched -= 1
                         else:

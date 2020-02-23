@@ -12,7 +12,7 @@
                                                                    
 
 
-GoBooDo is a **python3** program for downloading **previewable** books on Google books. It downloads high resolution images (1500dpi) of pages and combines them to save the file as a PDF. 
+GoBooDo is a **python3** program for downloading **previewable** books on Google books. It downloads high resolution images of pages and combines them to save the file as a PDF. 
 # Usage
 For downloading a book GoBooDo requires the book id which can be fetched from the url of the book. For instance consider the example below:
 ~~~
@@ -28,16 +28,32 @@ python GoBooDo.py --id=XUwOtdcIWdkC
 The configuration can be done in the settings.json and the description is as follows:
 ~~~
 {
-  "country":"co.in", //The TLD for the service that is being used for example books.google.co.in or books.google.de
-  "proxy_links":0,   //0 for disabling proxy when fetching page links upon reaching the limit.
-  "proxy_images":0,  //0 for disabling proxy when fetching  page images upon reaching the limit.
-  "max_retry_links":1, // max retries for fetching a link using proxies.
-  "max_retry_images":1 // max retries for a fetching a image using proxies.
+  "country":"co.in", // The TLD for the service that is being used for example books.google.co.in or books.google.de
+  "page_resolution": 1500, // The resoution of page in dpi.
+  "empty_image_size": 98670, // The size of empty image, it refers to the size of "Image not available pages".
+  "proxy_links":0,   // 0 for disabling proxy when fetching page links upon reaching the limit.
+  "proxy_images":0,  // 0 for disabling proxy when fetching  page images upon reaching the limit.
+  "max_retry_links":1, // Max retries for fetching a link using proxies.
+  "max_retry_images":1 // Max retries for a fetching a image using proxies.
+  "global_retry_time": // 0 for not running GoBooDo indefinitely, the number of seconds in each iteration otherwise.
 }
 ~~~
 
 The output will be saved as a folder named the 'id' of the book which was given as input. The final PDF will be in the output folder inside it along with a folder containing the images.
 Proxies may be added in proxies.txt (a sample proxy has been added already).
+
+For changing "empty_image_size" according to the resolution of the page set in page_resolution, run setEmptyImageSize.py. The resolution is set with respect to books scanned in **potrait** manner
+which is the case for most of them.
+
+The breakup of the files downloaded is as follows:
+~~~
+    "data/obstinatePages.pkl": Pages which are to be fetched in the subsequent iterations.
+    "data/pageLinkDict.pkl": A dictionary of pages and their links.
+    "data/pagesFetched.pkl": Pages which have been fetched already.
+    "Images/": All the images which have been downloaded for the current book.
+    "Output/": The PDF of the current book.
+~~~
+ 
 # Dependencies
 Use pip install requirements.txt for installing all the packages at once.
 ~~~

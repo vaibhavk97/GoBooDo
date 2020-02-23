@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import json
 import random
 import requests
@@ -7,8 +9,10 @@ import pickle
 from storeImages import StoreImages
 from makePDF import createBook
 import argparse
+from time import sleep
 
 #suppress urllib3 warning
+
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -55,6 +59,7 @@ class  GoBooDo:
                         }
         except Exception as e:
             print(e)
+
     def getProxy(self):
         prox =  random.choice(self.plist)
         return prox.strip()
@@ -77,17 +82,19 @@ class  GoBooDo:
             stringResponse = ("["+scripts[6].text.split("_OC_Run")[1][1:-2]+"]")
             jsonResponse = json.loads(stringResponse)
             self.createPageDict(jsonResponse)
-            print(f'The total pages available are {len(self.pageList)}')
+            print(f'The total pages available for fetching are {len(self.pageList)}')
             for elem in jsonResponse[3]['page']:
                 page = elem['pid']
                 self.pageList.remove(page)
                 self.pageLinkDict[page]['src'] = elem['src']
         else:
             try:
-                with open(os.path.join(self.dataPath,'obstinate_pages.pkl'),'rb') as ofile:
+                with open(os.path.join(self.dataPath,'obstinatePages.pkl'),'rb') as ofile:
                     self.pageList = pickle.load(ofile)
                 with open(os.path.join(self.dataPath,'pageLinkDict.pkl'),'rb') as ofile:
                     self.pageLinkDict = pickle.load(ofile)
+                print(f'An earlier download attempt was detected, GoBooDo will continue using the previous state.')
+                print(f'The total pages available for fetching are {len(self.pageList)}')
             except:
                 print('Please delete the corresponding folder and start again or the book is not available for preview.')
                 exit(0)
@@ -119,7 +126,7 @@ class  GoBooDo:
                 self.b_url = "https://books.google."+self.country+"/books?id=" + str(self.id) + "&pg=" +\
                              str(self.pageList[0]) + "&jscmd=click3"
                 pageData = requests.get(self.b_url, headers=self.head,proxies=proxyDict,verify=False)
-            except Exception as e:
+            except:
                 print('Could not connect with this proxy')
             return pageData.json()
         else:
@@ -129,8 +136,10 @@ class  GoBooDo:
             return pageData.json()
 
     def processBook(self):
-        downloadService = StoreImages(self.path,settings['proxy_images'])
+        print('------------------- Fetching Images -------------------')
+        downloadService = StoreImages(self.path,settings['proxy_images'],settings['page_resolution'],settings['empty_image_size'])
         downloadService.getImages(settings['max_retry_images']+1)
+        print('------------------- Creating PDF -------------------')
         service = createBook(self.name, self.path)
         service.makePdf()
 
@@ -174,8 +183,8 @@ class  GoBooDo:
                 lastFirstList = self.pageList[0]
             except:
                 break
-        with open(os.path.join(self.dataPath, 'obstinate_pages.pkl'), 'wb+') as ofile:
-            pickle.dump(self.obstinatePages, ofile)
+        with open(os.path.join(self.dataPath, 'obstinatePages.pkl'), 'wb+') as ofile:
+            pickle.dump(list(set(self.obstinatePages)), ofile)
         with open(os.path.join(self.dataPath, 'pageLinkDict.pkl'), 'wb+') as ofile:
             pickle.dump(self.pageLinkDict, ofile)
         self.processBook()
@@ -192,8 +201,18 @@ ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
     ''')
     book_id = args.id
     if(book_id==None or len(book_id)!=12):
-        print('No book id or incorrect book id given')
+        print('No book id given or incorrect book id given')
         exit(0)
-    book = GoBooDo(args.id)
-    book.start()
-
+    retry_time = settings['global_retry_time']
+    if retry_time!=0:
+        while True:
+            book = GoBooDo(args.id)
+            book.start()
+            print('The programming is currently waiting for the next iteration and can be exited safely.')
+            if len(book.obstinatePages)==0:
+                print('There are no pages to be fetched. Exiting')
+                exit(0)
+            sleep(retry_time)
+    else:
+        book = GoBooDo(args.id)
+        book.start()
