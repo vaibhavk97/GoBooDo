@@ -1,6 +1,7 @@
 import pickle
 import json
 import requests
+from tqdm import  tqdm
 
 data = {'PP1': {'src': 'https://books.google.co.in/books/content?id=LyIiDAAAQBAJ&pg=PP1&img=1&zoom=3&hl=en&sig=ACfU3U0QB2GP7uc99P7zcq7C0jNYsfaERQ', 'order': 0},
         'PT3': {'src': 'https://books.google.co.in/books/content?id=LyIiDAAAQBAJ&pg=PT3&img=1&zoom=3&hl=en&sig=ACfU3U3joc6hGZD5iSjgfbnrd6K_GfW1zw', 'order': 3},
@@ -29,10 +30,9 @@ with open('settings.json') as settingsFile:
     settings = json.load(settingsFile)
 
 pageSizes = []
-for page in data.keys():
+for page in tqdm(data.keys()):
     link = data[page]['src']+'&w=' + str(settings['page_resolution'])
     response = requests.get(link)
-    print(response.content)
     pageSizes.append(len(response.content))
 
 frequencyDict = {}
