@@ -43,7 +43,7 @@ The output will be saved as a folder named the 'id' of the book which was given 
 Proxies may be added in proxies.txt (a sample proxy has been added already).
 
 For changing "empty_image_size" according to the resolution of the page set in page_resolution, run setEmptyImageSize.py. The resolution is set with respect to books scanned in **potrait** manner
-which is the case for most of them.
+which is the case for most of them. However, it can still be the case that this page is present in the final PDF.
 
 The breakup of the files downloaded is as follows:
 ~~~
