@@ -79,7 +79,10 @@ class  GoBooDo:
         print(f'Downloading {self.name[:-15]}')
         if self.found == False:
             scripts = (soup.findAll('script'))
-            stringResponse = ("["+scripts[6].text.split("_OC_Run")[1][1:-2]+"]")
+            try:
+                stringResponse = ("["+scripts[6].text.split("_OC_Run")[1][1:-2]+"]")
+            except:
+                stringResponse = ("["+scripts[-4].text.split("_OC_Run")[1][1:-2]+"]")
             jsonResponse = json.loads(stringResponse)
             self.createPageDict(jsonResponse)
             print(f'The total pages available for fetching are {len(self.pageList)}')
@@ -147,6 +150,7 @@ class  GoBooDo:
         try:
             self.getInitialData()
         except:
+            print('Received invalid response')
             exit(0)
         try:
             lastFirstList = self.pageList[0]
