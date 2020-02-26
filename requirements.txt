@@ -3,3 +3,5 @@ bs4
 Pillow
 fpdf
 html5lib
+tqdm
+pytesseract

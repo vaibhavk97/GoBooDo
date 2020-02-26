@@ -1,7 +1,7 @@
 {
     "country": "co.in",
-    "page_resolution": 1500,
-    "empty_image_size": 98670,
+    "page_resolution": 500,
+    "tesseract_path": "C:\\program Files\\Tesseract-OCR\\tesseract.exe",
     "proxy_links": 0,
     "proxy_images": 0,
     "max_retry_links": 1,

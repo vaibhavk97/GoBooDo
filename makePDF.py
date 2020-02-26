@@ -20,4 +20,6 @@ class createBook:
             pdf.image(pagePath,0,0)
         if not os.path.exists(os.path.join(self.path,'Output')):
             os.mkdir(os.path.join(self.path,'Output'))
-        pdf.output(os.path.join(self.path,'Output',str(self.name[:min(10,len(self.name))])+".pdf"),"F")
+        name = str(self.name[:min(10,len(self.name))]).replace(" ","")
+        name = ''.join(ch for ch in name if ch.isalnum()) + ".pdf"
+        pdf.output(os.path.join(self.path,'Output',name),"F")

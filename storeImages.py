@@ -1,3 +1,4 @@
+import pytesseract
 from PIL import Image
 import requests
 import pickle
@@ -7,11 +8,11 @@ import random
 
 class StoreImages:
 
-    def __init__(self,bookpath,proxyflag,emptyImageSize,resolution):
-        self.emptyImageSize = emptyImageSize
+    def __init__(self,bookpath,proxyflag,resolution,tesserPath):
         self.pageResolution = resolution
         self.proxyFlag = proxyflag
         self.bookPath = bookpath
+        self.tesserPath = tesserPath
         self.imagePath = os.path.join(self.bookPath,'Images')
         self.pagesFetched = {}
         self.PageLinkDict = {}
@@ -53,6 +54,20 @@ class StoreImages:
         except:
             pass
 
+    def pageEmpty(self,image):
+        im = Image.open(BytesIO(image))
+        width, height = im.size
+        im = im.resize((int(width / 5), int(height / 5)))
+        gray = im.convert('L')
+        bw = gray.point(lambda x: 0 if x < 250 else 255, '1')
+        try:
+            text = pytesseract.image_to_string(bw)
+        except:
+            pytesseract.pytesseract.tesseract_cmd = self.tesserPath
+            text = pytesseract.image_to_string(bw)
+        return text.replace('\n', " ") == 'image not available'
+
+
     def getImages(self,retries):
         self.resethead()
         for pageData in self.PageLinkDict.keys():
@@ -79,7 +94,7 @@ class StoreImages:
                                 proxyFailed = True
                         else:
                             pageImage = requests.get(link + '&w=' + str(self.pageResolution), headers=self.head, verify=False)
-                        if len(pageImage.content) == self.emptyImageSize or proxyFailed:
+                        if self.pageEmpty(pageImage.content) or proxyFailed:
                             self.resethead()
                             checkIfPageFetched -= 1
                         else:

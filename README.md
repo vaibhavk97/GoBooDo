@@ -30,7 +30,7 @@ The configuration can be done in the settings.json and the description is as fol
 {
   "country":"co.in", // The TLD for the service that is being used for example books.google.co.in or books.google.de
   "page_resolution": 1500, // The resoution of page in dpi.
-  "empty_image_size": 98670, // The size of empty image, it refers to the size of "Image not available pages".
+  "tesseract_path": 'C:\program Files\Tesseract-OCR\tesseract.exe', // The path for tesseract engine if not available via environment variables.
   "proxy_links":0,   // 0 for disabling proxy when fetching page links upon reaching the limit.
   "proxy_images":0,  // 0 for disabling proxy when fetching  page images upon reaching the limit.
   "max_retry_links":1, // Max retries for fetching a link using proxies.
@@ -42,8 +42,7 @@ The configuration can be done in the settings.json and the description is as fol
 The output will be saved as a folder named the 'id' of the book which was given as input. The final PDF will be in the output folder inside it along with a folder containing the images.
 Proxies may be added in proxies.txt (a sample proxy has been added already).
 
-For changing "empty_image_size" according to the resolution of the page set in page_resolution, run setEmptyImageSize.py. The resolution is set with respect to books scanned in **potrait** manner
-which is the case for most of them. However, it can still be the case that this page is present in the final PDF.
+GooBoDo now uses Tesseract for identifying empty images fetched from valid links. Please configure Tesseract prior to avoid any errors related to it. The path in settings is used for Windows installation. Please configure Tesseract for a linux distribution accordingly.
 
 The breakup of the files downloaded is as follows:
 ~~~
@@ -62,6 +61,8 @@ bs4
 Pillow
 fpdf
 html5lib
+tqdm
+pytesseract
 ~~~
 
 # Features 

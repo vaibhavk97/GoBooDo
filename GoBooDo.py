@@ -85,7 +85,7 @@ class  GoBooDo:
                 stringResponse = ("["+scripts[-4].text.split("_OC_Run")[1][1:-2]+"]")
             jsonResponse = json.loads(stringResponse)
             self.createPageDict(jsonResponse)
-            print(f'The total pages available for fetching are {len(self.pageList)}')
+            print(f'Pages to be fetched in the current iteration are : {len(self.pageList)}')
             for elem in jsonResponse[3]['page']:
                 page = elem['pid']
                 self.pageList.remove(page)
@@ -140,7 +140,7 @@ class  GoBooDo:
 
     def processBook(self):
         print('------------------- Fetching Images -------------------')
-        downloadService = StoreImages(self.path,settings['proxy_images'],settings['page_resolution'],settings['empty_image_size'])
+        downloadService = StoreImages(self.path,settings['proxy_images'],settings['page_resolution'],settings['tesseract_path'])
         downloadService.getImages(settings['max_retry_images']+1)
         print('------------------- Creating PDF -------------------')
         service = createBook(self.name, self.path)
