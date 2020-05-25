@@ -58,7 +58,10 @@ class  GoBooDo:
                 'Cookie': "NID=" + str(req.cookies['NID']),
                         }
         except Exception as e:
-            print(e)
+            if 'captcha'.encode() in req.content:
+                print("IP detected by Google for too much requests, asking for captcha completion. Please wait some minutes before trying again. \n")
+            else:
+                print(e)
 
     def getProxy(self):
         prox =  random.choice(self.plist)
