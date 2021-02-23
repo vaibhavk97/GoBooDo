@@ -30,7 +30,7 @@ The configuration can be done in the settings.json and the description is as fol
 {
   "country":"co.in", // The TLD for the service that is being used for example books.google.co.in or books.google.de
   "page_resolution": 1500, // The resoution of page in dpi.
-  "tesseract_path": 'C:\program Files\Tesseract-OCR\tesseract.exe', // The path for tesseract engine if not available via environment variables.
+  "tesseract_path": "C:\\program Files\\Tesseract-OCR\\tesseract.exe", // The path for tesseract engine if not available via environment variables. E.g. on linux Ubuntu this looks like "tesseract_path": "/usr/bin/tesseract",
   "proxy_links":0,   // 0 for disabling proxy when fetching page links upon reaching the limit.
   "proxy_images":0,  // 0 for disabling proxy when fetching  page images upon reaching the limit.
   "max_retry_links":1, // Max retries for fetching a link using proxies.
