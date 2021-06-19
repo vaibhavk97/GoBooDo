@@ -54,7 +54,7 @@ The breakup of the files downloaded is as follows:
 ~~~
  
 # Dependencies
-Use pip install requirements.txt for installing all the packages at once.
+Use `pip install -r requirements.txt` for installing all the packages at once.
 ~~~
 requests
 bs4
