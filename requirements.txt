@@ -5,3 +5,4 @@ fpdf
 html5lib
 tqdm
 pytesseract
+pypdf2
