@@ -147,7 +147,10 @@ class  GoBooDo:
         downloadService.getImages(settings['max_retry_images']+1)
         print('------------------- Creating PDF -------------------')
         service = createBook(self.name, self.path)
-        service.makePdf()
+        if (settings.get('lang')):
+            service.ocrPdf(lang=settings['lang'])
+        else:
+            service.makePdf()
 
     def start(self):
         try:
