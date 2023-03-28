@@ -1,3 +1,5 @@
+Note: The project was made for purely recreational/educational purposes, and will not be maintained going ahead. 
+
 # GoBooDo
 ### A google books downloader with proxy support.
 
