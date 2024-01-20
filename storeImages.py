@@ -49,7 +49,7 @@ class StoreImages:
                 'Accept-Language': 'en-US,en;q=0.5',
                 'Accept-Encoding': 'gzip, deflate',
                 'Connection': 'close',
-                'Cookie': "NID=" + str(req.cookies['NID']),
+                'Cookie': "__Secure-ENID=" + str(req.cookies['__Secure-ENID']),
             }
         except:
             pass

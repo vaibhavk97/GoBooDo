@@ -47,7 +47,7 @@ class  GoBooDo:
 
     def resethead(self):
         try:
-            req = requests.get("https://books.google."+self.country,verify=False)
+            req = requests.get("https://google."+self.country, cookies={'CONSENT': 'YES+1'}, verify=False)
             self.head = {
                 'Host': 'books.google.'+self.country,
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:53.0) Gecko/20100101 Firefox/53.00',
@@ -55,7 +55,7 @@ class  GoBooDo:
                 'Accept-Language': 'en-US,en;q=0.5',
                 'Accept-Encoding': 'gzip, deflate',
                 'Connection': 'close',
-                'Cookie': "NID=" + str(req.cookies['NID']),
+                'Cookie': "__Secure-ENID=" + str(req.cookies['__Secure-ENID']),
                         }
         except Exception as e:
             if 'captcha'.encode() in req.content:
@@ -82,10 +82,10 @@ class  GoBooDo:
         print(f'Downloading {self.name[:-15]}')
         if self.found == False:
             scripts = (soup.findAll('script'))
-            try:
-                stringResponse = ("["+scripts[6].text.split("_OC_Run")[1][1:-2]+"]")
-            except:
-                stringResponse = ("["+scripts[-4].text.split("_OC_Run")[1][1:-2]+"]")
+            target = "_OC_Run"
+            index = [i for i, content in enumerate(scripts) if '_OC_Run' in str(content)]
+            index = index[0]
+            stringResponse = f"[{str(scripts[index]).split('_OC_Run')[1][1:].strip(');</script>')}]"
             jsonResponse = json.loads(stringResponse)
             self.createPageDict(jsonResponse)
             print(f'Pages to be fetched in the current iteration are : {len(self.pageList)}')
