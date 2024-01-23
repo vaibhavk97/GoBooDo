@@ -36,8 +36,9 @@ The configuration can be done in the settings.json and the description is as fol
   "proxy_links":0,   // 0 for disabling proxy when fetching page links upon reaching the limit.
   "proxy_images":0,  // 0 for disabling proxy when fetching  page images upon reaching the limit.
   "max_retry_links":1, // Max retries for fetching a link using proxies.
-  "max_retry_images":1 // Max retries for a fetching a image using proxies.
-  "global_retry_time": // 0 for not running GoBooDo indefinitely, the number of seconds of delay between each global retry otherwise.
+  "max_retry_images":1, // Max retries for a fetching a image using proxies.
+  "global_retry_time":30, // 0 for not running GoBooDo indefinitely, the number of seconds of delay between each global retry otherwise.
+  "lang": "" // "" for create PDF without OCR, languages which OCR reads in. E.g. "eng+ita".
 }
 ~~~
 
@@ -65,7 +66,10 @@ fpdf
 html5lib
 tqdm
 pytesseract
+pypdf2
 ~~~
+
+If you want to use OCR with languages other than English, you should download aditional languages data from [tesseract-ocr](https://github.com/tesseract-ocr).
 
 # Features 
 1. Stateful : GoBooDo keeps a track of the books which are downloaded. In each subsequent iterations of operation only those those links and images are fetched which were not downloaded earlier.

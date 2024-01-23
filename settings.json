@@ -6,5 +6,6 @@
     "proxy_images": 0,
     "max_retry_links": 1,
     "max_retry_images": 1,
-    "global_retry_time": 30
+    "global_retry_time": 30,
+    "lang": ""
 }
